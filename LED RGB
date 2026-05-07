@@ -1,0 +1,92 @@
+#include <DHT.h>
+#include <ESP8266WiFi.h>
+
+#define DHTPIN D4
+#define DHTTYPE DHT11
+
+#define LED1 D1
+#define BUZZER D5
+
+#define BOTAO1 D2
+#define BOTAO2 D3
+
+#define IR_SENSOR D6
+
+#define ROTATION A0
+
+#define RED D7
+#define GREEN D8
+#define BLUE D0
+
+const char* ssid = "SEU_WIFI";
+const char* password = "SUA_SENHA";
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+
+  Serial.begin(115200);
+
+  pinMode(LED1, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+
+  pinMode(BOTAO1, INPUT_PULLUP);
+  pinMode(BOTAO2, INPUT_PULLUP);
+
+  pinMode(IR_SENSOR, INPUT);
+
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+
+  dht.begin();
+
+  WiFi.begin(ssid, password);
+
+  Serial.println("Conectando WiFi...");
+
+  while (WiFi.status() != WL_CONNECTED) {
+
+    delay(1000);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi conectado!");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+
+  float temperatura = dht.readTemperature();
+  float umidade = dht.readHumidity();
+
+  int botao1 = digitalRead(BOTAO1);
+  int botao2 = digitalRead(BOTAO2);
+
+  int ir = digitalRead(IR_SENSOR);
+
+  int rotacao = analogRead(ROTATION);
+
+  Serial.print("Temperatura: ");
+  Serial.println(temperatura);
+
+  Serial.print("Umidade: ");
+  Serial.println(umidade);
+
+  Serial.print("Rotacao: ");
+  Serial.println(rotacao);
+
+  if (temperatura > 30) {
+
+    digitalWrite(BUZZER, HIGH);
+    digitalWrite(RED, HIGH);
+
+  } else {
+
+    digitalWrite(BUZZER, LOW);
+    digitalWrite(RED, LOW);
+  }
+
+  delay(2000);
+}
