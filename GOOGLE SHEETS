@@ -1,0 +1,14 @@
+Integração com Google Sheets
+
+A equipe pesquisou formas de integração entre ESP8266 e Google Sheets para armazenamento online dos dados coletados.
+
+Foi identificado que a comunicação pode ser realizada através de APIs Web utilizando HTTP Requests, permitindo que o ESP8266 envie informações em formato JSON diretamente para planilhas online.
+
+Essa abordagem permite:
+
+monitoramento remoto
+armazenamento em nuvem
+compartilhamento de dados
+criação de dashboards
+
+A integração poderá ser implementada futuramente utilizando Google Apps Script.
