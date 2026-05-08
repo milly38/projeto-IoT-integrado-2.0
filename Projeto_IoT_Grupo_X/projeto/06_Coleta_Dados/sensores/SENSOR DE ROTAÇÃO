@@ -1,0 +1,5 @@
+#define ROTATION A0
+int rotacao = analogRead(ROTATION);
+
+Serial.print("Rotacao: ");
+Serial.println(rotacao);
