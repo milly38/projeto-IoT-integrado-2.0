@@ -26,7 +26,17 @@ Desenvolver uma solução de IoT capaz de:
 
 ---
 
+## 🛠️ Tecnologias Utilizadas
 
+- ESP8266 D1
+- Arduino IDE
+- JSON
+- TCP/IP
+- MySQL
+- API REST
+- Google Sheets
+- GitHub
+- 
 ---
 
 ## 🧠 Etapas do Projeto
@@ -56,7 +66,9 @@ Controle de versões e evolução do desenvolvimento do projeto.
 
 ---
 
+## 🔄 Fluxo do Sistema
 
+Sensores → ESP8266 → Processamento → JSON → API → Banco de Dados → Google Sheets
 ---
 
 ## 📊 Variáveis do Sistema
