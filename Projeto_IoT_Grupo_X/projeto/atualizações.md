@@ -10,6 +10,7 @@
 | v2.0 | 25/04 | Implementação da leitura dos sensores |
 | v2.1 | 26/04 | Estruturação dos dados JSON |
 | v2.2 | 27/04 | Organização das pastas do GitHub |
+| v2.2 | 14/05 | Reestruturação do código dos sensores |
 
 ---
 #mudancas.md
@@ -34,3 +35,12 @@ A estrutura do GitHub foi reorganizada para melhorar:
 - documentação
 - separação das etapas
 - controle das evidências
+
+## Alteração 14/05 - PEU
+
+**Problema/Solução**
+Memória IRAM acima de 90% -	Otimizou strings, removeu debug desnecessários
+WiFi desconecta frequentemente - Adicionou reconexão automática com delay progressivo
+JSON não formatava corretamente - Usou library ArduinoJson (opcional mas recomendada)
+MySQL conexão tira timeout - Aumentou connection timeout, adicionou keep-alive
+Google Sheets limite de requests - Implementou sincronização em lotes (1/minuto)
