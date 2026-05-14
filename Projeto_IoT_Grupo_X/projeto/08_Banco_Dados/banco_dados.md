@@ -14,12 +14,20 @@ O banco de dados escolhido foi o MySQL.
 
 ## Justificativa da Escolha
 
-O MySQL foi escolhido por:
-- facilidade de utilização
-- integração com APIs
-- suporte amplo
-- organização relacional
-- compatibilidade com sistemas IoT
+**Integração com tecnologias do projeto**
+- Biblioteca `mysql` do Node.js: ✓ Nativa
+- Suporte a API REST: ✓ Direto do servidor Node.js
+- Integração Google Sheets: ✓ Via script Node.js
+
+ **Escalabilidade**
+- Suporta milhões de registros
+- Pode rodar em servidor local (SENAI) ou em cloud
+- Fácil backup e recuperação
+
+ **Segurança**
+- Autenticação por usuário/senha
+- Controle de permissões por tabela
+- Criptografia em produção
 
 ---
 
