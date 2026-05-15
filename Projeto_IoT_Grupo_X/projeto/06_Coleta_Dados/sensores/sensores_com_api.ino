@@ -1,222 +1,160 @@
-// ===== BIBLIOTECAS =====
+// ================= BIBLIOTECAS =================
 #include <DHT.h>
 
-// ===== DEFINIÇÕES DE PINOS (baseado na Etapa 1) =====
-#define DHTPIN D4           // Sensor DHT11
+// ================= PINOS =================
+#define DHTPIN D4
 #define DHTTYPE DHT11
 
-#define BOTAO_SW1 D1        // Botão manual
-#define LED_RGB_R D5        // LED RGB - Vermelho
-#define LED_RGB_G D6        // LED RGB - Verde
-#define BUZZER D8           // Buzzer (aviso)
-#define SENSOR_ROTACAO A0   // Sensor de rotação (análogo)
-#define SENSOR_IR D2        // IR Receiver
+#define LED1 D1
+#define LED2 D0
 
-// ===== INICIALIZAÇÕES =====
+#define BOTAO_SW1 D2
+#define SENSOR_IR D5
+#define BUZZER D7
+
+#define LM35 A0
+
+// ================= SENSOR =================
 DHT dht(DHTPIN, DHTTYPE);
 
-// ===== VARIÁVEIS DO SISTEMA =====
+// ================= VARIÁVEIS =================
 float temperatura = 0;
 float umidade = 0;
-int rotacao = 0;
-String estado = "NORMAL";
-bool botao_pressionado = false;
-bool ir_detectado = false;
+int sensorAnalogico = 0;
 
-// ===== SETUP =====
+String estado = "NORMAL";
+
+bool botao = false;
+bool ir = false;
+
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-  
-  // Inicializa DHT11
   dht.begin();
-  Serial.println("[SETUP] DHT11 inicializado");
-  
-  // Configura pinos como entrada
-  pinMode(BOTAO_SW1, INPUT);
+
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+
+  pinMode(BOTAO_SW1, INPUT_PULLUP);
   pinMode(SENSOR_IR, INPUT);
-  pinMode(SENSOR_ROTACAO, INPUT);
-  
-  // Configura pinos como saída
-  pinMode(LED_RGB_R, OUTPUT);
-  pinMode(LED_RGB_G, OUTPUT);
   pinMode(BUZZER, OUTPUT);
-  
-  // Desliga tudo no início
-  digitalWrite(LED_RGB_R, LOW);
-  digitalWrite(LED_RGB_G, LOW);
+
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
   digitalWrite(BUZZER, LOW);
-  
-  Serial.println("[SETUP] Sensores e atuadores configurados");
+
+  Serial.println("Sistema IoT iniciado");
 }
 
-// ===== LOOP PRINCIPAL =====
+// ================= LOOP =================
 void loop() {
-  // 1️⃣ LÊ OS SENSORES
+
   lerSensores();
-  
-  // 2️⃣ VERIFICA AS ENTRADAS (botões, IR)
-  verificarEntradas();
-  
-  // 3️⃣ APLICA AS REGRAS DO SISTEMA
-  aplicarRegras();
-  
-  // 4️⃣ ACIONA OS ATUADORES (LED, buzzer)
-  acionarAtuadores();
-  
-  // 5️⃣ EXIBE NO SERIAL
-  exibirDados();
-  
-  // Aguarda 2 segundos antes de nova leitura
-  delay(10000);
+  lerEntradas();
+  regrasSistema();
+  atuadores();
+  enviarSerialJSON();
+
+  delay(2000); // leve e estável
 }
 
-// ===== FUNÇÕES DE LEITURA =====
-
+// ================= LEITURA =================
 void lerSensores() {
-  // Lê DHT11
+
   temperatura = dht.readTemperature();
   umidade = dht.readHumidity();
-  
-  // Verifica se leitura foi bem-sucedida
+
+  sensorAnalogico = analogRead(LM35);
+
   if (isnan(temperatura) || isnan(umidade)) {
-    Serial.println("[ERRO] Falha ao ler DHT11");
-    estado = "ERRO";
-    return;
-  }
-  
-  // Lê rotação (0-1023)
-  rotacao = analogRead(SENSOR_ROTACAO);
-  // Converte para 0-100%
-  rotacao = map(rotacao, 0, 1023, 0, 100);
-}
-
-void verificarEntradas() {
-  // Verifica botão SW1
-  if (digitalRead(BOTAO_SW1) == HIGH) {
-    botao_pressionado = true;
-  } else {
-    botao_pressionado = false;
-  }
-  
-  // Verifica IR
-  if (digitalRead(SENSOR_IR) == HIGH) {
-    ir_detectado = true;
-  } else {
-    ir_detectado = false;
+    estado = "ERRO_SENSOR";
   }
 }
 
-void aplicarRegras() {
-  // Começa sempre em NORMAL
+// ================= ENTRADAS =================
+void lerEntradas() {
+
+  botao = (digitalRead(BOTAO_SW1) == LOW); // botão pressionado = LOW
+
+  ir = (digitalRead(SENSOR_IR) == LOW); // muitos módulos IR são LOW ativo
+}
+
+// ================= REGRAS =================
+void regrasSistema() {
+
   estado = "NORMAL";
-  
-  // ===== REGRA 1: Temperatura Alta =====
+
   if (temperatura > 30) {
     estado = "ALERTA";
-    Serial.println("[ALERTA] Temperatura acima de 30°C!");
   }
-  
-  // ===== REGRA 2: Temperatura Crítica =====
+
   if (temperatura > 35) {
-    estado = "CRÍTICO";
-    Serial.println("[CRÍTICO] Temperatura acima de 35°C!");
+    estado = "CRITICO";
   }
-  
-  // ===== REGRA 3: Botão Pressionado =====
-  if (botao_pressionado) {
+
+  if (botao) {
     estado = "MANUAL";
-    Serial.println("[MANUAL] Botão SW1 foi pressionado");
   }
-  
-  // ===== REGRA 4: IR Detectado =====
-  if (ir_detectado) {
+
+  if (ir) {
     estado = "EVENTO";
-    Serial.println("[EVENTO] IR detectado!");
-  }
-  
-  // ===== REGRA 5: Rotação Alta =====
-  if (rotacao > 80) {
-    if (estado != "CRÍTICO") { // Não sobrescreve CRÍTICO
-      estado = "CRÍTICO";
-    }
-    Serial.println("[CRÍTICO] Rotação acima de 80%!");
   }
 }
 
-void acionarAtuadores() {
-  // ===== LED RGB =====
+// ================= ATUADORES =================
+void atuadores() {
+
   if (estado == "NORMAL") {
-    digitalWrite(LED_RGB_G, HIGH);  // Verde
-    digitalWrite(LED_RGB_R, LOW);
+    digitalWrite(LED1, HIGH);
+    digitalWrite(LED2, LOW);
     digitalWrite(BUZZER, LOW);
-  } 
+  }
+
   else if (estado == "ALERTA") {
-    digitalWrite(LED_RGB_R, HIGH);  // Vermelho
-    digitalWrite(LED_RGB_G, LOW);
-    tone(BUZZER, 1000, 500);        // Som de alerta
-  } 
-  else if (estado == "CRÍTICO") {
-    // Pisca vermelho + buzzer contínuo
-    digitalWrite(LED_RGB_R, !digitalRead(LED_RGB_R)); // Alterna
-    digitalWrite(LED_RGB_G, LOW);
-    digitalWrite(BUZZER, HIGH);     // Som contínuo
-  } 
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED2, HIGH);
+    tone(BUZZER, 1000);
+  }
+
+  else if (estado == "CRITICO") {
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED2, HIGH);
+    tone(BUZZER, 2000);
+  }
+
   else if (estado == "MANUAL") {
-    digitalWrite(LED_RGB_G, !digitalRead(LED_RGB_G)); // Pisca verde
-    digitalWrite(LED_RGB_R, LOW);
+    digitalWrite(LED1, !digitalRead(LED1));
     digitalWrite(BUZZER, LOW);
   }
+
   else if (estado == "EVENTO") {
-    digitalWrite(LED_RGB_R, HIGH);  // Vermelho
-    digitalWrite(LED_RGB_G, HIGH);  // + Verde = Amarelo
-    digitalWrite(BUZZER, LOW);
+    digitalWrite(LED1, HIGH);
+    digitalWrite(LED2, HIGH);
+    noTone(BUZZER);
   }
-  else if (estado == "ERRO") {
-    // Pisca tudo
-    digitalWrite(LED_RGB_R, !digitalRead(LED_RGB_R));
-    digitalWrite(LED_RGB_G, !digitalRead(LED_RGB_G));
-    digitalWrite(BUZZER, !digitalRead(BUZZER));
+
+  else if (estado == "ERRO_SENSOR") {
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED2, LOW);
+    tone(BUZZER, 500);
   }
 }
 
-void exibirDados() {
-  Serial.println("\n==== LEITURA DOS SENSORES ====");
-  Serial.print("Temperatura: ");
-  Serial.print(temperatura);
-  Serial.println(" °C");
-  
-  Serial.print("Umidade: ");
-  Serial.print(umidade);
-  Serial.println(" %");
-  
-  Serial.print("Rotação: ");
-  Serial.print(rotacao);
-  Serial.println(" %");
-  
-  Serial.print("Botão SW1: ");
-  Serial.println(botao_pressionado ? "PRESSIONADO" : "SOLTO");
-  
-  Serial.print("IR: ");
-  Serial.println(ir_detectado ? "DETECTADO" : "NÃO DETECTADO");
-  
-  Serial.print("Estado do Sistema: ");
-  Serial.println(estado);
-  Serial.println("================================\n");
-}
-
-// ===== FUNÇÃO DE DEBUG (Opcional) =====
-void debugDadosJSON() {
-  // Estrutura que será enviada para API
-  Serial.println(montarJSON());
-}
-
+// ================= JSON (PARA FLASK) =================
 String montarJSON() {
+
   String json = "{";
   json += "\"temperatura\":" + String(temperatura) + ",";
   json += "\"umidade\":" + String(umidade) + ",";
-  json += "\"rotacao\":" + String(rotacao) + ",";
+  json += "\"analogico\":" + String(sensorAnalogico) + ",";
   json += "\"estado\":\"" + estado + "\"";
   json += "}";
+
   return json;
+}
+
+// ================= SERIAL =================
+void enviarSerialJSON() {
+
+  Serial.println(montarJSON());
 }
