@@ -6,11 +6,15 @@ A API tem a função de receber os dados enviados pelo ESP8266, processar, armaz
 ---
 
 ## Tecnologias utilizadas
-- Python
-- Flask
-- Flask-RESTful (opcional)
-- JSON
-- HTTP POST
+Microcontrolador: ESP8266 D1
+Sensores: DHT11 (temperatura e umidade)
+Linguagem embarcada: C++ (Arduino IDE)
+Linguagem backend: Python
+Framework: Flask
+Banco de dados: MySQL / SQLite
+Integração cloud: Google Sheets API
+Protocolo de comunicação: HTTP / TCP-IP
+Rede: Wi-Fi
 
 ---
 
