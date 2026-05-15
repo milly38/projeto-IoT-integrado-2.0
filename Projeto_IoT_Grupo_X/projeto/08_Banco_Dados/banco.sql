@@ -1,6 +1,6 @@
-CREATE DATABASE projeto_iot;
+CREATE DATABASE ProjetoIoT;
 
-USE projeto_iot;
+USE ProjetoIoT;
 
 CREATE TABLE sensores (
     id INT PRIMARY KEY AUTO_INCREMENT,
