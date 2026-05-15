@@ -1,8 +1,12 @@
 # DIÁRIO DE BORDO
 
-| Dia | Atividade | Problema | Solução |
-|-----|------------|----------|----------|
-| 23/04 | Configuração da IDE | Porta COM não aparecia | Reinstalação do driver |
-| 25/04 | Teste do Wi-Fi | Rede não conectava | Correção da senha |
-| 26/04 | Estrutura JSON | Dados incompletos | Ajuste das variáveis |
-| 27/04 | Organização GitHub | Estrutura desorganizada | Reorganização das pastas |
+| Dia | Atividade | 
+|-----|------------|
+| 01 | inicializacao | 
+| 02 | esp8266_config | 
+| 03 |sensores | 
+| 04| api_flask | 
+| 05 | banco_dados| 
+| 06| integracao_tcpip| 
+| 07 | testes_gerais |
+| 08 | resumo_geral | 
