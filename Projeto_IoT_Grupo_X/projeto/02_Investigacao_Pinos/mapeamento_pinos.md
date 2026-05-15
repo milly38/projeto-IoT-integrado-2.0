@@ -32,7 +32,6 @@ ESP8266 D1 Mini
 - GPIO0 (D3) interfere no boot → usar com cuidado (pull-up necessário)
 - GPIO15 (D8) deve estar LOW no boot
 - ESP8266 possui apenas 1 entrada analógica (A0)
-- Não existem A1 e A2 no ESP8266
 
 ---
 
