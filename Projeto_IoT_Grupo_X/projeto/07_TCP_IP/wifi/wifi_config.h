@@ -1,2 +1,3 @@
-Nome da rede: Cyber-Projeto
-Senha da rede: Senai@122
+
+#define WIFI_SSID "Cyber-Projeto"
+#define WIFI_PASS "Senai@122"
