@@ -19,7 +19,7 @@ ESP8266 D1 Mini
 | Botão SW1        | D2          | GPIO4  | Entrada digital            |
 | Botão SW2        | D3          | GPIO0  | Entrada digital (BOOT)     |
 | DHT11            | D4          | GPIO2  | Sensor temperatura/umidade |
-| Buzzer           | D7          | GPIO13 | Alarme sonoro              |
+| Buzzer           | D5          | GPIO13 | Alarme sonoro              |
 | Sensor IR        | D6          | GPIO12 | Detecção de objeto         |
 | Encoder (rotação)| RX / D8     | GPIO3/15 | Leitura de rotação       |
 | RGB LED          | D8, D9, D10 | GPIO15, GPIO9, GPIO10 | Controle RGB |
