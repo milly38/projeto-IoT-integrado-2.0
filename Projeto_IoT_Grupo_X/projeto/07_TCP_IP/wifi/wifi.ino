@@ -1,37 +1,51 @@
-o professor acabou de mandar esse - #include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
-// Nome da rede Wi-Fi
-const char* ssid = "CONECTADO";
+const char* ssid = "Cyber-Projeto";
+const char* password = "Senai@122";
 
-// Senha da rede Wi-Fi
-const char* password = "C@necTa0!";
+// COLOQUE SEU IPV4 CERTO
+String servidor = "http://:5000/temperatura?sensor=ESP8266&temperatura=30";
+
+WiFiClient client;
 
 void setup() {
-  
-  // Inicializa comunicação serial
-  Serial.begin(115200);
-  
-  Serial.println();
-  Serial.println("Conectando ao Wi-Fi...");
 
-  // Inicia conexão Wi-Fi
+  Serial.begin(115200);
+
   WiFi.begin(ssid, password);
 
-  // Aguarda conexão
+  Serial.println("Conectando WiFi...");
+
   while (WiFi.status() != WL_CONNECTED) {
+
     delay(500);
     Serial.print(".");
   }
 
-  // Exibe conexão realizada
-  Serial.println();
-  Serial.println("Wi-Fi conectado com sucesso!");
-
-  // Exibe IP obtido
-  Serial.print("IP do ESP8266: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("");
+  Serial.println("WiFi conectado!");
 }
 
 void loop() {
-  
+
+  if (WiFi.status() == WL_CONNECTED) {
+
+    HTTPClient http;
+
+    http.begin(client, servidor);
+
+    int httpCode = http.GET();
+
+    Serial.print("Código HTTP: ");
+    Serial.println(httpCode);
+
+    String resposta = http.getString();
+
+    Serial.println(resposta);
+
+    http.end();
+  }
+
+  delay(5000);
 }
