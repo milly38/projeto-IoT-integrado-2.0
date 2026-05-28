@@ -1,0 +1,57 @@
+# Teste 1: Rota pública (sem autenticação) curl http://localhost:5000/api/status
+
+
+
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {
+                      "mensagem": "API est\u00e1 funcionando",
+                      "status": "online"
+                    }
+
+RawContent        : HTTP/1.1 200 OK
+                    Connection: close
+                    Content-Length: 68
+                    Content-Type: application/json
+                    Date: Fri, 22 May 2026 14:43:14 GMT
+                    Server: Werkzeug/3.1.8 Python/3.13.2
+
+                    {
+                      "mensagem": "API est\u00e1 func...
+Forms             : {}
+Headers           : {[Connection, close], [Content-Length, 68], [Content-Type, application/json], [Date, Fri, 22 May 2026 14:43:14 GMT]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 68
+
+
+
+PS C:\Users\Aluno\projeto-IoT-integrado-2.0-main>
+
+------
+
+# Teste 2: : Rota protegida (SEM API Key - deve falhar)
+
+PS C:\Users\Aluno\projeto-IoT-integrado-2.0-main> curl -X POST http://localhost:5000/api/dados -H "Content-Type: application/json" -d "{\"temperatura\": 25.5, \"umidade\": 60}"
+Invoke-WebRequest : Não é possível associar o parâmetro 'Headers'. Não é possível converter o valor "Content-Type: application/json" do tipo "System.String" no tipo "System.Collections.IDictionary".
+No linha:1 caractere:49
++ ... /localhost:5000/api/dados -H "Content-Type: application/json" -d "{\" ...
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Invoke-WebRequest], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
+
+--------
+
+# Teste 3: Rota protegida (COM API Key - deve funcionar)
+
+PS C:\Users\Aluno\projeto-IoT-integrado-2.0-main> curl -X POST http://localhost:5000/api/dados -H "Content-Type: application/json" -H "X-API-Key: 906cd9640fb559b6d63115e13d715b63" -d "{\"temperatura\": 25.5, \"umidade\": 60}"
+Invoke-WebRequest : Não é possível associar o parâmetro 'Headers'. Não é possível converter o valor "Content-Type: application/json" do tipo "System.String" no tipo "System.Collections.IDictionary".
+No linha:1 caractere:49
++ ... /localhost:5000/api/dados -H "Content-Type: application/json" -H "X-A ...
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Invoke-WebRequest], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
